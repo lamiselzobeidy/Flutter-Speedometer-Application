@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:sensors/sensors.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -135,14 +136,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_Current_Speed',
-              style: TextStyle(
+              style: GoogleFonts.changa(
                 fontSize: 60.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
+                color: Colors.green
               ),
             ),
             Text(
-              'km/h \n',
+              'km/h \n\n',
               style: TextStyle(
                 fontSize: 30.0,
                 fontWeight: FontWeight.bold,
@@ -156,16 +156,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_Accelerating_Time',
-              style: TextStyle(
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
+              style: GoogleFonts.changa(
+                  fontSize: 35.0,
+                  color: Colors.green
               ),
             ),
             Text(
               'Seconds \n',
               style: TextStyle(
                 fontSize: 30.0,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Text(
@@ -176,16 +176,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_Decelerating_Time',
-              style: TextStyle(
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
+              style: GoogleFonts.changa(
+                  fontSize: 35.0,
+                  color: Colors.green
               ),
             ),
             Text(
               'Seconds',
               style: TextStyle(
                 fontSize: 30.0,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
