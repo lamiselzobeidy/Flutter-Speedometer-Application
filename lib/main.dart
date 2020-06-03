@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:sensors/sensors.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:geolocator/geolocator.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,19 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.green,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Speedometer App'),
@@ -38,16 +27,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -55,42 +34,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Random random = new Random();
   Timer _everySecond;
-  var changeaccelerometer ;
   int _Accelerating_Time = 0;
   int _Decelerating_Time = 0;
-  int _Current_Speed = 0;
-  int _CurrentSpeed = 0;
+  double _Current_Speed = 0;
   int _upCounter = 0;
   int _downCounter = 0;
   bool speeding = false;
 
-  //function to fetch the new speed
-  int _changeSpeed() {
-    int _speed;
-    _speed = (changeaccelerometer.round().abs()) * 10;
-    if (_speed < 10) {
-      _speed = 10;
-    } else if (_speed > 30) {
-      _speed = 30;
-    }
-    return _speed;
+  //function to fetch the new speed every second
+  void _changeSpeed() {
+    var geolocator = Geolocator();
+    var options = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+    geolocator.getPositionStream(options).listen((position) {
+      var speedInMps = position.speed; // current speed in m/s
+      print("Your speed: ");
+      print(speedInMps);
+      _Current_Speed = ((speedInMps * 3.6)*10).roundToDouble(); // current speed in km/h
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    accelerometerEvents.listen((AccelerometerEvent event) {
-      changeaccelerometer = event.y;
-      print(event.y);
-    });
-    // defines a timer
+
+    // defines a timer with 1 second interval
     _everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
       setState(() {
 
-        //update the current speed
-        _Current_Speed = _changeSpeed();
+        //update the current speed each second
+        _changeSpeed();
 
         //speeding is set to true when the driver reaches speed of 30 km/h else the speeding is set to false
         if (speeding) {
