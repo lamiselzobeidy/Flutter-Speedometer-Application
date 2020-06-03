@@ -67,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
         //speeding is set to true when the driver reaches speed of 30 km/h else the speeding is set to false
         if (speeding) {
-          if (_Current_Speed == 10) {
+          if (_Current_Speed <= 10) {
             speeding = false;
             _Decelerating_Time = _downCounter;
             _downCounter = 0;
