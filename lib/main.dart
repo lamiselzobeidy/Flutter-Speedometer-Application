@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Speedometer App',
       theme: ThemeData(
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -35,22 +35,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Timer _everySecond;
-  int _Accelerating_Time = 0;
-  int _Decelerating_Time = 0;
-  double _Current_Speed = 0;
+  int _AcceleratingTime = 0;
+  int _DeceleratingTime = 0;
+  double _CurrentSpeed = 0;
   int _upCounter = 0;
   int _downCounter = 0;
-  bool speeding = false;
+  bool _speeding = false;
 
   //function to fetch the new speed every second
   void _changeSpeed() {
     var geolocator = Geolocator();
-    var options = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
+    var options =
+        LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 10);
     geolocator.getPositionStream(options).listen((position) {
       var speedInMps = position.speed; // current speed in m/s
       print("Your speed: ");
       print(speedInMps);
-      _Current_Speed = ((speedInMps * 3.6)*10).roundToDouble(); // current speed in km/h
+      _CurrentSpeed =
+          (speedInMps * 3.6).roundToDouble(); // current speed in km/h
     });
   }
 
@@ -61,34 +63,37 @@ class _MyHomePageState extends State<MyHomePage> {
     // defines a timer with 1 second interval
     _everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
       setState(() {
-
         //update the current speed each second
         _changeSpeed();
 
         //speeding is set to true when the driver reaches speed of 30 km/h else the speeding is set to false
-        if (speeding) {
-          if (_Current_Speed <= 10) {
-            speeding = false;
-            _Decelerating_Time = _downCounter;
+        if (_speeding) {
+          if (_CurrentSpeed <= 10) {
+            _speeding = false;
+            _DeceleratingTime = _downCounter;
             _downCounter = 0;
           }
-          _downCounter++;
+          else if(_CurrentSpeed <= 30)
+            {
+              _downCounter++;
+            }
         } else {
-          if (_Current_Speed >= 30) {
-            speeding = true;
-            _Accelerating_Time = _upCounter;
+          if (_CurrentSpeed >= 30) {
+            _speeding = true;
+            _AcceleratingTime = _upCounter;
             _upCounter = 0;
           }
-          _upCounter++;
+          else if(_CurrentSpeed >= 10)
+            {
+              _upCounter++;
+            }
         }
-
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -108,11 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Text(
-              '$_Current_Speed',
-              style: GoogleFonts.changa(
-                fontSize: 60.0,
-                color: Colors.green
-              ),
+              '$_CurrentSpeed',
+              style: GoogleFonts.changa(fontSize: 60.0, color: Colors.green),
             ),
             Text(
               'km/h \n\n',
@@ -128,11 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Text(
-              '$_Accelerating_Time',
-              style: GoogleFonts.changa(
-                  fontSize: 35.0,
-                  color: Colors.green
-              ),
+              '$_AcceleratingTime',
+              style: GoogleFonts.changa(fontSize: 35.0, color: Colors.green),
             ),
             Text(
               'Seconds \n',
@@ -148,11 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Text(
-              '$_Decelerating_Time',
-              style: GoogleFonts.changa(
-                  fontSize: 35.0,
-                  color: Colors.green
-              ),
+              '$_DeceleratingTime',
+              style: GoogleFonts.changa(fontSize: 35.0, color: Colors.green),
             ),
             Text(
               'Seconds',
